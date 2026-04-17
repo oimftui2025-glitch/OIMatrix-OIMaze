@@ -46,6 +46,8 @@ section.active { display: block; }
     background-position: center;
 }
 /* ------------------------------------------------ */
+.title-big { font-size: 4rem; margin-bottom: 5px; letter-spacing: 5px; }
+.subtitle { font-size: 1.2rem; color: var(--silver); letter-spacing: 2px; margin-bottom: 40px; font-family: 'Segoe UI', sans-serif;}
 
 .frame-silver {
     border: 8px solid var(--silver);
