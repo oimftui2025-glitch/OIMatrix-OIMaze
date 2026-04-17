@@ -28,7 +28,7 @@ section.active { display: block; }
     left: 20px;
     width: 60px; /* Ukuran bisa lo gede-kecilin di sini */
     height: 60px;
-    background-image: url('./assets/LOGO_OIM.jpg');
+    background-image: url('./assets/LOGO_OIM.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -39,7 +39,7 @@ section.active { display: block; }
     width: 350px; 
     height: 120px; 
     margin: 0 auto 30px auto; 
-    background-image: url('./assets/LOGO_OIMatrix.jpg');
+    background-image: url('./assets/LOGO_OIMatrix.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
