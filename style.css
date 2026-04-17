@@ -23,22 +23,23 @@ section.active { display: block; }
 
 /* --- PANGGIL GAMBAR DARI FOLDER ASSETS GITHUB --- */
 #oim-ftui-logo-small {
-    position: absolute;
+    position: fixed; /* Kuncinya di sini! Ganti absolute jadi fixed */
     top: 20px;
-    left: 20px;
-    width: 60px; /* Ukuran bisa lo gede-kecilin di sini */
+    left: 30px; /* Gue geser ke kanan dikit biar ga terlalu mepet banget pinggir layar */
+    width: 60px; 
     height: 60px;
-    background-image: url('./assets/LOGO_OIM.png');
+    background-image: url('./assets/LOGO_OIM.png'); /* Udah pake .png ya */
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    border-radius: 8px; /* Biar ujungnya ga kaku banget kalo bentuknya kotak */
+    border-radius: 8px; 
+    z-index: 1000; /* Biar logonya selalu tampil paling depan, ga ketutupan labirin */
 }
 
 #main-logo-image {
-    width: 350px; 
-    height: 120px; 
-    margin: 0 auto 30px auto; 
+    width: 550px;  /* Gue gedein lebarnya biar lebih mendominasi */
+    height: 200px; /* Tingginya disesuaikan biar proporsional */
+    margin: 0 auto 40px auto; /* Jarak bawahnya gue tambahin dikit ke 40px biar ga terlalu mepet sama tombol START */
     background-image: url('./assets/LOGO_OIMatrix.png');
     background-size: contain;
     background-repeat: no-repeat;
