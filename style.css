@@ -4,8 +4,8 @@
     --gold-solid: #f1c40f;
     --silver: #bdc3c7;
     --neon-blue: #00e5ff;
-    --maze-bg: #4dd0e1; /* Cyan persis kayak gambar */
-    --wall-color: #112240; /* Warna tembok biru dongker gelap */
+    --maze-bg: #4dd0e1; 
+    --wall-color: #112240; 
 }
 
 body {
@@ -55,7 +55,7 @@ input[type="text"]:focus { border-color: var(--gold-solid); box-shadow: 0 0 10px
 .stop-btn { background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-left: 20px; }
 .skip-btn { padding: 8px 20px; font-size: 0.9rem; margin-bottom: 10px; }
 
-/* --- MAZE SYSTEM (TEMBOK TIPIS) --- */
+/* --- MAZE SYSTEM (TEMBOK TIPIS & DINDING LUAR) --- */
 .maze-wrapper { display: flex; justify-content: center; margin: 20px 0; }
 #maze-grid {
     display: grid;
@@ -63,36 +63,43 @@ input[type="text"]:focus { border-color: var(--gold-solid); box-shadow: 0 0 10px
     border: 5px solid var(--wall-color); /* Tembok luar permanen */
     position: relative;
     box-shadow: 0 0 15px rgba(77, 208, 225, 0.5);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Feedback Dinding Luar (Flash Merah) */
+#maze-grid.grid-hit {
+    border-color: #ff1744 !important;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
 }
 
 .cell {
     width: 55px; height: 55px;
     box-sizing: border-box;
-    border-right: 4px solid transparent; /* Slot buat tembok Kanan */
-    border-bottom: 4px solid transparent; /* Slot buat tembok Bawah */
+    border-right: 4px solid transparent; /* Slot tembok Kanan */
+    border-bottom: 4px solid transparent; /* Slot tembok Bawah */
     position: relative;
     display: flex; justify-content: center; align-items: center;
 }
 
-/* Titik-titik background layaknya grid pasak */
+/* Titik Grid */
 .cell::after {
     content: ''; width: 8px; height: 8px;
     background: #2c3e50; border-radius: 50%; opacity: 0.4;
 }
 
-/* Class penanda tembok aktif */
+/* Class penanda tembok dalam aktif */
 .wall-right { border-right-color: var(--wall-color); }
 .wall-bottom { border-bottom-color: var(--wall-color); }
 
-/* FASE INVISIBLE (SEMUA TEMBOK JADI TRANSPARAN) */
+/* FASE INVISIBLE */
 .maze-invisible .wall-right { border-right-color: transparent !important; }
 .maze-invisible .wall-bottom { border-bottom-color: transparent !important; }
 
-/* FASE NABRAK (Tembok yang ditabrak nyala merah) */
+/* FASE NABRAK (Tembok dalam menyala merah) */
 .hit-right { border-right-color: #ff1744 !important; box-shadow: inset -5px 0 10px rgba(255,0,0,0.5); }
 .hit-bottom { border-bottom-color: #ff1744 !important; box-shadow: inset 0 -5px 10px rgba(255,0,0,0.5); }
 
-/* FASE MENANG (Tembok nyala emas) */
+/* FASE MENANG LEVEL */
 .maze-win { background-color: #76ff03 !important; }
 .maze-win .wall-right { border-right-color: #000 !important; }
 .maze-win .wall-bottom { border-bottom-color: #000 !important; }
@@ -104,7 +111,31 @@ input[type="text"]:focus { border-color: var(--gold-solid); box-shadow: 0 0 10px
 .game-header, .timer-area { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; font-size: 1.2rem; font-weight: bold; border-bottom: 1px solid #333; margin-bottom: 15px;}
 .timer-area { margin-top: 20px; justify-content: center; border: none;}
 
-.controls { margin-top: 10px; }
-.side-btn { display: inline-block; }
-.controls button { padding: 15px 25px; margin: 3px; font-size: 1.5rem; cursor: pointer; background: #112240; color: white; border: 2px solid var(--neon-blue); border-radius: 8px; transition: 0.2s;}
-.controls button:active { background: var(--neon-blue); color: black;}
+/* --- D-PAD KONTROL JOYSTICK --- */
+.controls-dpad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px; 
+    margin-top: 15px;
+}
+.dpad-row {
+    display: flex;
+    justify-content: center;
+    gap: 5px; 
+}
+.dpad-middle { align-items: center; }
+.dpad-center { width: 60px; height: 60px; }
+
+.dpad-btn {
+    width: 60px; height: 60px;
+    font-size: 1.8rem; cursor: pointer;
+    background: #112240; color: white;
+    border: 2px solid var(--neon-blue); border-radius: 10px;
+    display: flex; justify-content: center; align-items: center;
+    transition: 0.1s; box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+}
+.dpad-btn:active {
+    background: var(--neon-blue); color: black;
+    transform: translateY(2px); box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
