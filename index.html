@@ -3,40 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OIMatrix - OIM FTUI</title>
+    <title>OIMatrix - OIMaze</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <section id="page1" class="active">
-        
         <div id="oim-ftui-logo-small"></div>
         
         <div class="logo-container">
             <div id="main-logo-image"></div>
-             <p class="subtitle">LET'S ESCAPE THE MAZE!</p>
+            <p class="subtitle">ESCAPE THE INVISIBLE MAZE!</p>
             <button class="blue-btn" onclick="showPage('page2')">START</button>
         </div>
     </section>
 
     <section id="page2">
         <div class="frame-silver">
-            <h1 class="gold-text">OIMATRIX</h1>
-            <p>1. Hafalkan labirin dalam 1 menit.<br>
-               2. Tembok akan menghilang menjadi warna solid.<br>
-               3. Gerakkan titik merah ke bendera 🏁.<br>
-               4. Kamu punya 1,5 menit dan 3 nyawa setiap level.<br>
-               5. Selesaikan level sebanyak mungkin!</p>
-            <button class="blue-btn" onclick="showPage('page3')">LANJUT</button>
+            <h1 class="gold-text">ATURAN MAIN</h1>
+            <div class="rules-text">
+                <p>1. Hafalkan rute labirin (garis pembatas) dalam waktu yang ditentukan.</p>
+                <p>2. Saat waktu habis atau klik SKIP, semua garis tembok akan <strong>MENGHILANG</strong>.</p>
+                <p>3. Gerakkan titik merah ke bendera 🏁 tanpa menyentuh tembok gaib.</p>
+                <p>4. Tersedia 3 nyawa. Tiap nabrak tembok, nyawa berkurang.</p>
+                <p>5. Selesaikan level sebanyak mungkin sebelum waktu/nyawa habis!</p>
+            </div>
+            <button class="blue-btn mt-20" onclick="showPage('page3')">LANJUT</button>
         </div>
     </section>
 
     <section id="page3">
         <div class="frame-silver">
-            <h2 class="yellow-text">MASUKKAN NAMA TIM</h2>
-            <input type="text" id="teamNameInput" placeholder="Ketik nama tim kamu di sini..." autocomplete="off">
+            <h2 class="yellow-text">REGISTRASI TIM</h2>
+            <p style="color: #ccc; margin-bottom: 20px;">Masukkan nama tim kamu untuk masuk ke dalam matriks.</p>
+            <input type="text" id="teamNameInput" placeholder="Ketik nama tim di sini..." autocomplete="off">
             <br>
-            <button class="blue-btn" onclick="saveAndStart()">MAIN SEKARANG!</button>
+            <button class="blue-btn mt-20" onclick="saveAndStart()">ENTER THE MATRIX</button>
         </div>
     </section>
 
@@ -44,36 +46,47 @@
         <div class="frame-silver">
             <div class="game-header">
                 <div id="hearts">❤️❤️❤️</div>
-                <div>Lvl: <span id="lvlDisplay" class="bold-text">1</span></div>
-                <div>Score: <span id="scoreDisplay" class="bold-text">0</span></div>
+                <div>Lvl: <span id="lvlDisplay" class="gold-text">1</span></div>
+                <div>Score: <span id="scoreDisplay" class="gold-text">0</span></div>
             </div>
 
             <button id="skipBtn" class="blue-btn skip-btn" onclick="startPlayPhase()">SKIP MENGHAFAL</button>
 
-            <div id="maze-grid"></div>
+            <div class="maze-wrapper">
+                <div id="maze-grid"></div>
+            </div>
 
             <div class="controls">
                 <button onclick="movePlayer(0, -1)">▲</button><br>
-                <button onclick="movePlayer(-1, 0)">◀</button>
-                <button onclick="movePlayer(1, 0)">▶</button><br>
+                <div class="side-btn">
+                    <button onclick="movePlayer(-1, 0)">◀</button>
+                    <button onclick="movePlayer(1, 0)">▶</button>
+                </div>
                 <button onclick="movePlayer(0, 1)">▼</button>
             </div>
 
-            <button id="nextBtn" class="blue-btn" style="display:none; margin: 15px auto;" onclick="nextLevel()">NEXT LEVEL</button>
+            <button id="nextBtn" class="blue-btn" style="display:none; margin: 15px auto;" onclick="nextLevel()">NEXT LEVEL 🚀</button>
 
             <div class="timer-area">
-                ⏱️ <span id="timerDisplay">01:00</span>
-                <button class="stop-btn" onclick="finishGame()">STOP</button>
+                <span id="timerDisplay" class="timer-red">01:00</span>
+                <button class="stop-btn" onclick="finishGame('Menyerah (Berhenti)')">🛑 STOP</button>
             </div>
         </div>
     </section>
 
     <section id="page7">
         <div class="frame-silver">
-            <h1 class="gold-text">HASIL AKHIR</h1>
-            <h2 id="finalName" class="yellow-text">TIM N</h2>
-            <h3 style="color:#fff; font-size:2rem;">Total Score: <span id="finalScore" class="gold-text">0</span></h3>
-            <button class="blue-btn" onclick="location.reload()">MAIN LAGI</button>
+            <h1 style="color: #e74c3c; font-size: 3rem; margin: 0; letter-spacing: 2px;">GAME OVER</h1>
+            <h2 class="yellow-text mt-20" style="font-size: 2rem;" id="finalName">TIM MISTERIUS</h2>
+            
+            <div class="final-stats">
+                <p style="font-size: 1.2rem; margin: 5px;">Alasan: <strong id="gameover-reason" style="color: #e74c3c;">Waktu Habis</strong></p>
+                <p style="font-size: 1.2rem; margin: 5px;">Mencapai Level: <strong class="gold-text" id="final-level">0</strong></p>
+                <p style="font-size: 1.5rem; margin: 15px 0 5px 0;">TOTAL SCORE</p>
+                <h1 class="gold-text" style="font-size: 3.5rem; margin: 0;" id="finalScore">0</h1>
+            </div>
+
+            <button class="blue-btn mt-20" onclick="location.reload()">MAIN LAGI</button>
         </div>
     </section>
 
