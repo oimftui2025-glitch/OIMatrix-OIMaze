@@ -5,7 +5,7 @@ let playerPos = {x: 0, y: 0};
 let gameTimer;
 let isPlaying = false;
 let currentMazeData = {};
-let cols = 5, rows = 5; // Ukuran awal grid
+let cols = 5, rows = 5; 
 
 // --- 1. NAVIGASI PAGE ---
 function showPage(pageId) {
@@ -26,12 +26,10 @@ function saveAndStart() {
     startLevel();
 }
 
-// --- 3. AI GENERATOR LABIRIN (DFS MAZE ALGORITHM) ---
-// Bikin labirin asli dengan tembok pembatas yang ruwet
+// --- 3. AI GENERATOR LABIRIN (DFS ALGORITHM) ---
 function generateDFSMaze(c, r) {
     let walls = new Set();
     
-    // 1. Pasang SEMUA tembok di antara kotak
     for(let y=0; y<r; y++) {
         for(let x=0; x<c; x++) {
             if(x < c-1) walls.add(`${x},${y}-${x+1},${y}`); // Tembok Kanan
@@ -39,14 +37,13 @@ function generateDFSMaze(c, r) {
         }
     }
 
-    // 2. Bobok temboknya pake Depth First Search (DFS)
     let visited = new Set(['0,0']);
     let stack = [{x:0, y:0}];
 
     while(stack.length > 0) {
         let curr = stack[stack.length - 1];
         let neighbors = [];
-        let dirs = [[0,-1], [1,0], [0,1], [-1,0]]; // Atas, Kanan, Bawah, Kiri
+        let dirs = [[0,-1], [1,0], [0,1], [-1,0]]; 
         
         for(let d of dirs) {
             let nx = curr.x + d[0], ny = curr.y + d[1];
@@ -56,43 +53,40 @@ function generateDFSMaze(c, r) {
         }
 
         if(neighbors.length === 0) {
-            stack.pop(); // Jalan buntu, mundur
+            stack.pop(); 
         } else {
             let next = neighbors[Math.floor(Math.random() * neighbors.length)];
             visited.add(`${next.x},${next.y}`);
 
-            // Cari nama temboknya (selalu x,y yang kecil duluan)
             let edgeStr = (curr.x < next.x || curr.y < next.y)
                 ? `${curr.x},${curr.y}-${next.x},${next.y}`
                 : `${next.x},${next.y}-${curr.x},${curr.y}`;
 
-            walls.delete(edgeStr); // Hancurkan tembok biar ada jalan
+            walls.delete(edgeStr); 
             stack.push(next);
         }
     }
 
-    // 3. Tambahin kelonggaran (Bongkar bbrp tembok biar ga cuma ada 1 jalan)
     let wallsArray = Array.from(walls);
-    let removeCount = Math.floor(wallsArray.length * 0.2); // Buang 20% tembok sisa
+    let removeCount = Math.floor(wallsArray.length * 0.2); 
     for(let i=0; i<removeCount; i++) {
         let idx = Math.floor(Math.random() * wallsArray.length);
         wallsArray.splice(idx, 1);
     }
 
-    return wallsArray; // Array tembok yang masih berdiri
+    return wallsArray; 
 }
 
 // --- 4. GAMEPLAY LOGIC ---
 function startLevel() {
     isPlaying = false;
     
-    // Makin tinggi level, ukuran grid makin melar! (Maksimal 7x7 biar muat di HP)
-    cols = Math.min(5 + Math.floor(currentLevel / 3), 7);
+    cols = 5; 
     rows = cols; 
 
     currentMazeData = {
-        start: {x: 0, y: 0}, // Start selalu Kiri Atas
-        goal: {x: cols-1, y: rows-1}, // Goal selalu Kanan Bawah
+        start: {x: 0, y: 0},
+        goal: {x: cols-1, y: rows-1}, 
         walls: generateDFSMaze(cols, rows)
     };
     
@@ -109,14 +103,13 @@ function startLevel() {
     
     renderMaze();
     showPage('page4');
-    runTimer(60, true); // 60 detik ngapalin
+    runTimer(60, true); 
 }
 
 function renderMaze() {
     const grid = document.getElementById('maze-grid');
     grid.innerHTML = '';
     
-    // Set ukuran grid dinamis di CSS
     grid.style.gridTemplateColumns = `repeat(${cols}, 55px)`;
     grid.style.gridTemplateRows = `repeat(${rows}, 55px)`;
 
@@ -126,7 +119,6 @@ function renderMaze() {
             cell.className = 'cell';
             cell.id = `cell-${x}-${y}`;
 
-            // Cek apakah ada tembok di kanan/bawah kotak ini
             if(currentMazeData.walls.includes(`${x},${y}-${x+1},${y}`)) cell.classList.add('wall-right');
             if(currentMazeData.walls.includes(`${x},${y}-${x},${y+1}`)) cell.classList.add('wall-bottom');
 
@@ -134,7 +126,6 @@ function renderMaze() {
         }
     }
 
-    // Spawn Goal
     const goalEl = document.createElement('div');
     goalEl.className = 'goal';
     goalEl.innerText = '🏁';
@@ -185,7 +176,7 @@ function startPlayPhase() {
     isPlaying = true;
     document.getElementById('maze-grid').classList.add('maze-invisible');
     document.getElementById('skipBtn').style.display = 'none';
-    runTimer(90, false); // 90 Detik Waktu Main
+    runTimer(90, false); 
 }
 
 function movePlayer(dx, dy) {
@@ -194,24 +185,28 @@ function movePlayer(dx, dy) {
     let nx = playerPos.x + dx;
     let ny = playerPos.y + dy;
 
-    if(nx < 0 || nx >= cols || ny < 0 || ny >= rows) return; 
+    // Cek Tabrakan Dinding Luar
+    if(nx < 0 || nx >= cols || ny < 0 || ny >= rows) {
+        lives--;
+        document.getElementById('hearts').innerText = "❤️".repeat(lives > 0 ? lives : 0);
+        showHitFeedbackOuter();
+        
+        if(lives <= 0) setTimeout(() => finishGame("Kehabisan Nyawa (Nabrak Pinggiran)"), 500); 
+        return; 
+    }
 
-    // Bikin string tembok yang mau dilewatin
     let edgeStr = (playerPos.x < nx || playerPos.y < ny)
         ? `${playerPos.x},${playerPos.y}-${nx},${ny}`
         : `${nx},${ny}-${playerPos.x},${playerPos.y}`;
 
-    // Cek Nabrak
+    // Cek Nabrak Dinding Dalam
     if(currentMazeData.walls.includes(edgeStr)) {
         lives--;
         document.getElementById('hearts').innerText = "❤️".repeat(lives > 0 ? lives : 0);
+        showHitFeedbackInner(playerPos.x, playerPos.y, nx, ny);
         
-        // Tunjukin tembok yang ditabrak (Flash Merah)
-        showHitFeedback(playerPos.x, playerPos.y, nx, ny);
-        
-        if(lives <= 0) setTimeout(() => finishGame("Kehabisan Nyawa (Nabrak Mulu)"), 500); 
+        if(lives <= 0) setTimeout(() => finishGame("Kehabisan Nyawa (Nabrak Tembok)"), 500); 
     } else {
-        // Jalan Aman
         playerPos.x = nx;
         playerPos.y = ny;
         updatePlayerUI();
@@ -222,25 +217,28 @@ function movePlayer(dx, dy) {
     }
 }
 
-// Fitur Highlight Tembok yang Ditabrak
-function showHitFeedback(cx, cy, nx, ny) {
+function showHitFeedbackInner(cx, cy, nx, ny) {
     let cellId, hitClass;
-    
-    // Cari kotak mana yang punya border tersebut
     if(nx > cx) { cellId = `cell-${cx}-${cy}`; hitClass = 'hit-right'; }
     else if(nx < cx) { cellId = `cell-${nx}-${ny}`; hitClass = 'hit-right'; }
     else if(ny > cy) { cellId = `cell-${cx}-${cy}`; hitClass = 'hit-bottom'; }
     else if(ny < cy) { cellId = `cell-${nx}-${ny}`; hitClass = 'hit-bottom'; }
 
     let cell = document.getElementById(cellId);
-    if(cell) cell.classList.add(hitClass); // Tembok merah permanen sbg penanda mati
+    if(cell) cell.classList.add(hitClass);
+}
+
+function showHitFeedbackOuter() {
+    const grid = document.getElementById('maze-grid');
+    grid.classList.add('grid-hit');
+    setTimeout(() => grid.classList.remove('grid-hit'), 1000);
 }
 
 function handleWin() {
     isPlaying = false;
     clearInterval(gameTimer);
     
-    score += 1224 + (currentLevel * 100); 
+    score += 1500 + (currentLevel * 300); 
     document.getElementById('scoreDisplay').innerText = score;
     
     document.getElementById('maze-grid').classList.add('maze-win');
@@ -258,6 +256,7 @@ function finishGame(reason) {
     clearInterval(gameTimer);
     
     const teamName = localStorage.getItem('teamName') || "Tim Misterius";
+    
     document.getElementById('finalName').innerText = teamName;
     document.getElementById('final-level').innerText = currentLevel + 1; 
     document.getElementById('finalScore').innerText = score;
